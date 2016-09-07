@@ -1702,7 +1702,7 @@ class ReflectionClass extends ReflectionElement implements IReflectionClass
 	 * @return \TokenReflection\ReflectionClass
 	 * @throws \TokenReflection\Exception\ParseException If the class name could not be determined.
 	 */
-		protected function parseName(Stream $tokenStream)
+	protected function parseName(Stream $tokenStream)
 	{
 		if (!$tokenStream->is(T_STRING)) {
 
@@ -1727,6 +1727,13 @@ class ReflectionClass extends ReflectionElement implements IReflectionClass
 	}
 
 
+	/**
+	 * Generates string about error
+	 *
+	 * @param \TokenReflection\Stream\StreamBase $tokenStream Token substream
+	 * @param int $const
+	 * @return string
+	 */
 	private function getDataForError(Stream $tokenStream,$const) {
 	        $res = '';
 	        $res.= $tokenStream->getTokenValue($const-2);
