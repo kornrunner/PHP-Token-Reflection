@@ -1702,10 +1702,17 @@ class ReflectionClass extends ReflectionElement implements IReflectionClass
 	 * @return \TokenReflection\ReflectionClass
 	 * @throws \TokenReflection\Exception\ParseException If the class name could not be determined.
 	 */
-	protected function parseName(Stream $tokenStream)
+		protected function parseName(Stream $tokenStream)
 	{
 		if (!$tokenStream->is(T_STRING)) {
-			throw new Exception\ParseException($this, $tokenStream, 'Unexpected token found.', Exception\ParseException::UNEXPECTED_TOKEN);
+
+			throw new Exception\ParseException($this, $tokenStream, 'Unexpected token found. File:'.
+		                $tokenStream->getFileName(T_STRING).
+		                ' symbol expected:'.$tokenStream->getTokenName(T_STRING).
+		                ' symbol found:'.json_encode($tokenStream->getType()).
+		                ' data:'.$this->getDataForError($tokenStream,T_STRING),
+		                Exception\ParseException::UNEXPECTED_TOKEN
+                	);
 		}
 
 		if ($this->namespaceName === ReflectionNamespace::NO_NAMESPACE_NAME) {
@@ -1718,6 +1725,17 @@ class ReflectionClass extends ReflectionElement implements IReflectionClass
 
 		return $this;
 	}
+
+
+	private function getDataForError(Stream $tokenStream,$const) {
+	        $res = '';
+	        $res.= $tokenStream->getTokenValue($const-2);
+	        $res.= $tokenStream->getTokenValue($const-1);
+	        $res.= $tokenStream->getTokenValue($const);
+	        $res.= $tokenStream->getTokenValue($const+1);
+	        $res.= $tokenStream->getTokenValue($const+2);
+	        return $res;
+    	}
 
 	/**
 	 * Parses the parent class.
